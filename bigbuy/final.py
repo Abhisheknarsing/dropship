@@ -1,0 +1,42 @@
+class finalProducts:
+  def __init__(self,id,name,sku,url,ean13,description,tags,wholesalePrice,retailPrice,images,quantity,categeory,defaultcategeory,width,height,depth,weight,shopprice):
+    self.id = id
+    self.name = name
+    self.sku = sku
+    self.url = url
+    self.ean13 = ean13
+    self.description = description
+    self.tags = tags
+    self.wholesalePrice = wholesalePrice
+    self.retailPrice = "0"
+    self.images = images
+    self.quantity = quantity
+    self.categeory = "26;27" #categeory
+    self.defaultcategeory = "27" #defaultcategeory
+    self.width = width
+    self.height = height
+    self.depth = depth
+    self.weight = weight
+    self.price = shopprice
+    self.upc = ""
+    self.active = "1"
+    self.visiblity = "both"
+    self.condition = "new"
+    self.avilableForOrder ="1"
+    self.showPrice = "1"
+    self.avilableOnlineOnly = "0"
+    self.shortDes = description
+    self.specialPrice = round( shopprice-(shopprice/10)  ,2 )
+    self.specialPriceSD ="2020-02-02"
+    self.specialPriceED = "2022-02-02"
+    self.OnSale = "1"
+    self.metatitle = name
+    self.metadec = name
+    self.outOfStock = "0"
+    self.minimimQuantity = "1"
+    self.avilableDate = "2016-05-05"
+    self.textInStock = "In Stock"
+    self.textBackOrder = "Current Supply. Ordering Avilable"
+    self.shipmentfee = ""
+    self.feature = ""
+
