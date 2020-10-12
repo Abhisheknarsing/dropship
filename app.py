@@ -46,8 +46,9 @@ def openseller():
         for b in app.catdata:
             if b['id'] == x:
                 finallist.append([b['id'],b['name']])
-    
-    return render_template('pages/placeholder.catselector.html',result = finallist, maindata=app.catdata,products=getjsonbyId(select))
+    pro = getjsonbyId(select)
+    print(pro)
+    return render_template('pages/placeholder.catselector.html',result = finallist,maindata=app.catdata, products=pro)
 
 @app.route('/login')
 def login():
@@ -93,20 +94,19 @@ app.catdata=json.loads(app.catdata)
 file.close()
 
 def getjsonbyId(idn):
-    data = getjson()
-    lister = []
-    for x in data:
-        if x['defaultcategeory'] == idn:
-            lister.append(x)
-    print(lister)
-    return lister
 
+    ran_list_to_save = []
 
-
-def getjson(): 
     with open('datafiles/jsondataall.json') as f:
         tdata = json.load(f)
-    return tdata
+    
+    for x in tdata:
+        if str(x['defaultcategeory']) == str(idn):
+            ran_list_to_save.append(x)
+            
+   
+    return ran_list_to_save
+
 
 
 if __name__ == '__main__':
