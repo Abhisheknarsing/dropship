@@ -26,9 +26,18 @@
         <div class="list-group collapse" id="{{ value['id'] }}">
             {%- for value2 in maindata -%}
                {%- if value2['parentCategory'] == value['id']  -%}
-                <a href="#{{ value2['id'] }}" class="list-group-item" style="padding-left:25px;" data-toggle="collapse">
-                    <i class="glyphicon glyphicon-chevron-right"></i>{{ value2['name'] }}
+               
+               <div class="list-group-item">
+                <a href="/openSeller?select={{ value2['id'] }}"  style="padding-left:25px">
+                    {{ value2['name'] }}
+                    <a href="#{{value2['id']}}" style="color:red" data-toggle="collapse">
+                    <i class="glyphicon glyphicon-chevron-right"></i>
+                    </a>
                 </a>
+               </div>
+               
+                
+                
                 <div class="list-group collapse" id="{{ value2['id'] }}">
                 {%- for value3 in maindata -%}
                 
@@ -55,10 +64,14 @@
         <thead>
             <tr>
                 <th>id</th>
-                <th>categeory</th>
+               
                 <th>name</th>
                 <th>quantity</th>
                 <th>action</th>
+                <th>wholesale </th>
+                <th>Price</th>
+                <th>add</th>
+                
             </tr>
         </thead>
         <tbody>
@@ -67,18 +80,12 @@
                 <td>{{ temp['id'] }}</td>
                 <td>{{ temp['name'] }}</td>
                 <td><img style="height:70px;width:auto" src = {{ temp['images'].split(';')[0] }}></td>
-                <td>61</td>
+                <td>{{ temp['quantity'] }}</td>
+                <td>{{ temp['wholesalePrice'] }}</td>
+                <td>{{ temp['price'] }}</td>
                 <td><button>add</button></td>
             </tr>
         {% endfor %}
-
-        <tr>
-                <td>ss</td>
-                <td>dd</td>
-                <td>sdsd</td>
-                <td>61</td>
-                <td><button>add</button></td>
-            </tr>
            
         </tbody>
     </table>
