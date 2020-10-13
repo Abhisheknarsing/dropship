@@ -50,22 +50,21 @@ def openseller():
     print(pro)
     return render_template('pages/placeholder.catselector.html',result = finallist,maindata=app.catdata, products=pro)
 
-@app.route('/login')
-def login():
-    form = LoginForm(request.form)
-    return render_template('forms/login.html', form=form)
 
 
-@app.route('/register')
-def register():
-    form = RegisterForm(request.form)
-    return render_template('forms/register.html', form=form)
+@app.route('/add')
+def add():
+    session['filename'] = "something.json"
+    filename = session.get('file')
+    pid= request.args.get('pid')
+    pid = getjsonbyProductId(pid)
+    return str(pid)
+    
 
 
-@app.route('/forgot')
-def forgot():
-    form = ForgotForm(request.form)
-    return render_template('forms/forgot.html', form=form)
+
+
+
 
 @app.errorhandler(500)
 def internal_error(error):
@@ -89,25 +88,28 @@ if not app.debug:
 
 
 file = open("datafiles/data.txt","r")
+
 app.catdata=file.read()
 app.catdata=json.loads(app.catdata)
 file.close()
 
 def getjsonbyId(idn):
-
     ran_list_to_save = []
-
     with open('datafiles/jsondataall.json') as f:
         tdata = json.load(f)
-    
     for x in tdata:
         if str(x['defaultcategeory']) == str(idn):
             ran_list_to_save.append(x)
-            
-   
     return ran_list_to_save
 
-
+def getjsonbyProductId(idn):
+    ran_list_to_save = ""
+    with open('datafiles/jsondataall.json') as f:
+        pdata = json.load(f)
+    for y in pdata:
+        if str(y['id']) == str(idn):
+            return y
+    return "none"
 
 if __name__ == '__main__':
     app.run()
