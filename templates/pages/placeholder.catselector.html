@@ -13,11 +13,13 @@
     <div class="row" style="padding:50px">
         <div class="col-sm-4"></div>
         <div class="col-sm-2">
+        <input type="text" id="catcat"  name="categeory" placeholder="Categeory">
         <button onClick="addCat()" class="btn btn-success">Add Categeory</button>
         </div>
          <div class="col-sm-2">
          <form method="get" action = "/assignCategeory" method="GET">
         <input type="text"  name="filename" value="{{ info[0] }}" style="display:none">
+        
         <button type="submit" class="btn btn-success">Finish Adding</button>
         </form
          </div>
@@ -28,9 +30,10 @@
 <script>
 
 function addCat(filename,id){
+    
 $.ajax({
         type: 'GET',
-        url: '/addCat?filename={{info[0]}}&id={{info[1]}}',
+        url: '/addCat?filename={{info[0]}}&id={{info[1]}}&categeory='+document.getElementById("catcat").value,
         success: function(data){
           alert(data);
         }

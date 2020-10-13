@@ -3,6 +3,7 @@ import logging
 from logging import Formatter, FileHandler
 import os
 import csv, json
+from bigbuy import finalProducts
 
 
 app = Flask(__name__)
@@ -44,13 +45,38 @@ def openseller():
 
 
 
+
 @app.route('/assignCategeory')
 def assign():
     filename = request.args.get('filename')
     fi = open("bigbuyData/files/config/"+str(filename)+".json","r")
     dat = fi.read()
-    return dat
-
+    lister = dat.split(",")
+    f = open("bigbuyData/products_got_from_bigbuy.json","r")
+    data = json.loads(f.read())
+    f.close()
+    finaldata = []
+    count=0
+    c=0
+    zero = False
+    with open('bigbuyData/files/'+str(filename)+'.csv', 'w+', newline='', encoding="utf-8") as csvfile:
+        spamwriter = csv.writer(csvfile)
+        for x in lister:
+            if count == 0:
+                count=2
+                if str(x) == str("0"):
+                    zero = True
+            else:
+                for value in data:
+                    if str(value['categeory']) == str(x.split(":")[0]):
+                        if c == 0:
+                            print(value['id'])
+                            spamwriter.writerow(["ID","Name *","Reference #*","Price*","Friendly-url*","Ean-13","UPC","Active(0/1)","visibility(both/catalog/search/none)","Condition(new/used/refurbished)","Available for order (0 = No /1 = Yes)","Show Price","Available online only (0 = No/ 1 = Yes)",	"Short Description",	"Description",	"Tags(xâ€”y--z..)","Wholesale Price","Unit price","Special Price","special price start date","Special Price End Date","On sale (0/1)","Meta Title","Meta Description","Image Url(xâ€”y--z..)","Quantity","Out of stock","Minimal Quantity","Product available date","Text when in stock","Text when backorder allowed","Category Id(x--y--z..)","Default Category id","Width","height","depth","weight","Additional shipping cost","feature(Name:Value)"])
+                            spamwriter.writerow([0,value['name'],value['sku'],value['price'],value['url'],value['ean13'],value['upc'],value['active'],value['visiblity'],value['condition'],value['avilableForOrder'],1,value['avilableOnlineOnly'],value['shortDes'],value['description'],value['tags'],value['wholesalePrice'],value['retailPrice'],value['specialPrice'],value['specialPriceSD'],value['specialPriceED'],value['OnSale'],value['metatitle'],value['metadec'],value['images'],value['quantity'],value['outOfStock'],value['minimimQuantity'],value['avilableDate'],value['textInStock'],value['textBackOrder'],x.split(":")[1],x.split(":")[1],value['width'],value['height'],value['depth'],value['weight'],value['shipmentfee'],value['feature']])
+                            c = 3
+                        else:
+                            spamwriter.writerow([0,value['name'],value['sku'],value['price'],value['url'],value['ean13'],value['upc'],value['active'],value['visiblity'],value['condition'],value['avilableForOrder'],1,value['avilableOnlineOnly'],value['shortDes'],value['description'],value['tags'],value['wholesalePrice'],value['retailPrice'],value['specialPrice'],value['specialPriceSD'],value['specialPriceED'],value['OnSale'],value['metatitle'],value['metadec'],value['images'],value['quantity'],value['outOfStock'],value['minimimQuantity'],value['avilableDate'],value['textInStock'],value['textBackOrder'],x.split(":")[1],x.split(":")[1],value['width'],value['height'],value['depth'],value['weight'],value['shipmentfee'],value['feature']])
+    return render_template('pages/download.html',info=[str(filename)])
 
 
 
@@ -66,13 +92,14 @@ def add():
 def addcat():
     filename = request.args.get('filename')
     pid= request.args.get('id')
+    catname = request.args.get('categeory')
 
     fi = open("bigbuyData/files/config/"+str(filename)+".json","r")
     datatemp = fi.read()
     fi.close()
 
     fi = open("bigbuyData/files/config/"+str(filename)+".json","w+")
-    fi.write(datatemp+','+str(pid))
+    fi.write(datatemp+','+str(pid)+':'+catname)
     fi.close()
     return "Success"
 
@@ -95,11 +122,10 @@ def pulldata():
     
     return "Success"
 
-@app.route('/downloadCatCSV')
+@app.route('/download')
 def download():
     filename = request.args.get('filename')
-    catID = request.args.get('catID')
-    return str(catID)+str(filename)
+    return send_from_directory(directory="bigbuyData/files", filename=str(filename)+".csv")
 
 @app.route('/addCard')
 def addCard():
