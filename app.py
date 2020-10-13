@@ -1,7 +1,6 @@
 from flask import *
 import logging
 from logging import Formatter, FileHandler
-from forms import *
 import os
 import csv, json
 
@@ -23,8 +22,8 @@ def home():
             session['login'] = True
             return redirect("/seller", code=302)
         else:
-            return render_template('pages/placeholder.home.html',result="Wrong Password")
-    return render_template('pages/placeholder.home.html')
+            return render_template('pages/placeholder.login.html',result="Wrong Password")
+    return render_template('pages/placeholder.login.html')
 
 
 @app.route('/seller')
@@ -36,19 +35,22 @@ def sellers():
 
 @app.route('/openSeller')
 def openseller():
-    unique_list=[]
-    finallist = []
+    if not session.get('login'):
+       return redirect("/", code=302)
     select = request.args.get('select')
-    for x in app.catdata:
-        if x['parentCategory'] not in unique_list:
-            unique_list.append(x['parentCategory'])
-    for x in unique_list:
-        for b in app.catdata:
-            if b['id'] == x:
-                finallist.append([b['id'],b['name']])
+    filename = request.args.get('filename')
     pro = getjsonbyId(select)
-    print(pro)
-    return render_template('pages/placeholder.catselector.html',result = finallist,maindata=app.catdata, products=pro)
+    return render_template('pages/placeholder.catselector.html',info=[filename,select],maindata=app.catdata, products=pro)
+
+
+
+@app.route('/assignCategeory')
+def assign():
+    filename = request.args.get('filename')
+    fi = open("bigbuyData/files/config/"+str(filename)+".json","r")
+    dat = fi.read()
+    return dat
+
 
 
 
@@ -60,9 +62,55 @@ def add():
     pid = getjsonbyProductId(pid)
     return str(pid)
     
+@app.route('/addCat')
+def addcat():
+    filename = request.args.get('filename')
+    pid= request.args.get('id')
+
+    fi = open("bigbuyData/files/config/"+str(filename)+".json","r")
+    datatemp = fi.read()
+    fi.close()
+
+    fi = open("bigbuyData/files/config/"+str(filename)+".json","w+")
+    fi.write(datatemp+','+str(pid))
+    fi.close()
+    return "Success"
 
 
 
+
+@app.route('/dashboard')
+def dash():
+    if not session.get('login'):
+       return redirect("/", code=302)
+    filename = request.args.get('seller')
+    return render_template('pages/placeholder.dashboard.html',info=[filename])
+    
+
+
+
+
+@app.route('/pullData')
+def pulldata():
+    
+    return "Success"
+
+@app.route('/downloadCatCSV')
+def download():
+    filename = request.args.get('filename')
+    catID = request.args.get('catID')
+    return str(catID)+str(filename)
+
+@app.route('/addCard')
+def addCard():
+    filename = request.args.get('filename')
+    select = request.args.get('select')
+    catID = request.args.get('zero')
+    fi = open("bigbuyData/files/config/"+str(filename)+".json","w+")
+    fi.write(catID)
+    fi.close()
+    pro = getjsonbyId(select)
+    return render_template('pages/placeholder.firstcat.html',info=[filename],maindata=app.catdata, products=pro)
 
 
 
@@ -87,15 +135,14 @@ if not app.debug:
     app.logger.info('errors')
 
 
-file = open("datafiles/data.txt","r")
-
+file = open("bigbuyData/categeories.txt","r")
 app.catdata=file.read()
 app.catdata=json.loads(app.catdata)
 file.close()
 
 def getjsonbyId(idn):
     ran_list_to_save = []
-    with open('datafiles/jsondataall.json') as f:
+    with open('bigbuyData/products_got_from_bigbuy.json') as f:
         tdata = json.load(f)
     for x in tdata:
         if str(x['defaultcategeory']) == str(idn):
@@ -104,7 +151,7 @@ def getjsonbyId(idn):
 
 def getjsonbyProductId(idn):
     ran_list_to_save = ""
-    with open('datafiles/jsondataall.json') as f:
+    with open('bigbuyData/products_got_from_bigbuy.json') as f:
         pdata = json.load(f)
     for y in pdata:
         if str(y['id']) == str(idn):

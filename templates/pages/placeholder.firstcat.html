@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+</head>
+<body>
+<h3 class="text-center"><strong>Select Products<strong></h3><hr>
+
+<div class="container-fluid">
+<div class="row">
+
+<div class="col-sm-3">
+
+<div class="list-group list-group-root well">
+
+{%- for value in maindata -%}
+    {%- if value['parentCategory'] ==2 -%}
+        <a href="#{{ value['id'] }}" class="list-group-item" data-toggle="collapse">
+          <i class="glyphicon glyphicon-chevron-right"></i>{{ value['name'] }}
+        </a>
+        <div class="list-group collapse" id="{{ value['id'] }}">
+            {%- for value2 in maindata -%}
+               {%- if value2['parentCategory'] == value['id']  -%}
+               <div class="list-group-item">
+                <a href="/openSeller?select={{ value2['id'] }}&filename={{ info[0]}}"  style="padding-left:25px">
+                    {{ value2['name'] }}
+                    <a href="#{{value2['id']}}" style="color:red" data-toggle="collapse">
+                    <i class="glyphicon glyphicon-chevron-right"></i>
+                    </a>
+                </a>
+               </div>
+                <div class="list-group collapse" id="{{ value2['id'] }}">
+                {%- for value3 in maindata -%}
+                    {%- if value3['parentCategory'] == value2['id']  -%}
+                        <a href="/openSeller?select={{ value3['id'] }}&filename={{ info[0]}}" class="list-group-item" style="padding-left:35px;" ">
+                            <i class="glyphicon glyphicon-chevron-right"></i>{{ value3['name'] }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+                </div>
+               {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endfor %}
+</div>
+</div>
+
+<div class="col-sm-7">
+<table id="datatabledata" class="table table-striped table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Images</th>
+                <th>Quantity</th>
+                <th>Wholesale </th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for temp in products %}
+            <tr>
+                <td>{{ temp['id'] }}</td>
+                <td><a href="https://www.bigbuy.eu/en/{{ temp['url'] }}.html" >{{ temp['name'] }}</a></td>
+                <td><img style="height:70px;width:auto" src = {{ temp['images'].split(';')[0] }}></td>
+                <td>{{ temp['quantity'] }}</td>
+                <td>{{ temp['wholesalePrice'] }}</td>
+                <td>{{ temp['price'] }}</td>
+                <td><button>add</button></td>
+            </tr>
+        {% endfor %}
+           
+        </tbody>
+    </table>
+</div>
+</div>
+<div>
+
+
+</body>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#datatabledata').DataTable();
+} );
+</script>
+</html>
