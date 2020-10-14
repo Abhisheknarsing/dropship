@@ -126,9 +126,6 @@ def dash():
     return render_template('pages/placeholder.dashboard.html',info=[filename],arr = arr)
     
 
-
-
-
 @app.route('/track')
 def pulldata():
     filename = request.args.get('filename')
@@ -136,41 +133,42 @@ def pulldata():
     data = f.read()
     f.close()
     data = json.loads(data)
+    data2 = data
     tempjson = {}
     temp={}
     tempjson["product_stock_request"] = {}
     tempjson["product_stock_request"]["products"] = []
     cout=0
     changes = []
-    size = len(data)
-     
+    size = int(len(data)/10 + 1 if not len(data)%10 == 0 else 0)
     for x in data:
-        
-        if cout > 9:
+        if cout > 8:
             cout = 0
-            print(tempjson)
             endpoint = "https://api.bigbuy.eu/rest/catalog/productsstockbyreference.json?isoCode=en"
-            output = requests.post(endpoint, headers= {"Authorization": "Bearer NGFkMzI5NGIwMDM1ZmM2ODNkYTZmYTQ3Nzk3MjNjNDNlN2QwZGE5NWIyMjg1YWRkNDA0NzVkOTc1OTA0NTM1NA"},json=tempjson ).json()
-            print(output)
-            for x in data:
-                for y in output:
-                    if x["id"] == y["id"]:
-                        if str(x["quantity"]) != str(y["stocks"][0]["quantity"]):
-                            changes.append(y)
-            temp={}
-            tempjson = {}
-            tempjson["product_stock_request"] = {}
-            tempjson["product_stock_request"]["products"] = []
+            output = requests.post(endpoint, headers= {"Authorization": "Bearer NGFkMzI5NGIwMDM1ZmM2ODNkYTZmYTQ3Nzk3MjNjNDNlN2QwZGE5NWIyMjg1YWRkNDA0NzVkOTc1OTA0NTM1NA"},json=tempjson )
+            if output.status_code ==200:
+                output = output.json()
+                for j in data2:
+                    j = json.loads(j)
+                    for y in output:
+                        if j["id"] == y["id"]:
+                            if str(j["quantity"]) != str(y["stocks"][0]["quantity"]):
+                                if int(y["stocks"][0]["quantity"]) < 10:
+                                    changes.append([y['sku'],y["stocks"][0]["quantity"],j["quantity"]])
+                temp={}
+                tempjson = {}
+                tempjson["product_stock_request"] = {}
+                tempjson["product_stock_request"]["products"] = []
+            else:
+                print(output.text)
         else:
+            
             cout=cout+1
             temp={}
             ktemp = json.loads(x)
             temp["sku"] = ktemp["sku"]
             tempjson["product_stock_request"]["products"].append(temp)
-
-        
-
-    return render_template('pages/tracker.html',data=changes)
+    return render_template('pages/tracker.html',data=changes,filename=[filename])
 
 @app.route('/download')
 def download():
