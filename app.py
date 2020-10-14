@@ -4,6 +4,7 @@ from logging import Formatter, FileHandler
 import os
 import csv, json
 from bigbuy import finalProducts
+import requests
 
 
 app = Flask(__name__)
@@ -56,6 +57,7 @@ def assign():
     data = json.loads(f.read())
     f.close()
     finaldata = []
+    jsondata=[]
     count=0
     c=0
     zero = False
@@ -69,13 +71,21 @@ def assign():
             else:
                 for value in data:
                     if str(value['categeory']) == str(x.split(":")[0]):
+                        tempjson = {}
+                        tempjson['id'] = value['id']
+                        tempjson['sku'] = value['sku']
+                        tempjson['quantity'] = value['quantity']
+                        jsondata.append(json.dumps(tempjson))
                         if c == 0:
-                            print(value['id'])
                             spamwriter.writerow(["ID","Name *","Reference #*","Price*","Friendly-url*","Ean-13","UPC","Active(0/1)","visibility(both/catalog/search/none)","Condition(new/used/refurbished)","Available for order (0 = No /1 = Yes)","Show Price","Available online only (0 = No/ 1 = Yes)",	"Short Description",	"Description",	"Tags(xâ€”y--z..)","Wholesale Price","Unit price","Special Price","special price start date","Special Price End Date","On sale (0/1)","Meta Title","Meta Description","Image Url(xâ€”y--z..)","Quantity","Out of stock","Minimal Quantity","Product available date","Text when in stock","Text when backorder allowed","Category Id(x--y--z..)","Default Category id","Width","height","depth","weight","Additional shipping cost","feature(Name:Value)"])
                             spamwriter.writerow([0,value['name'],value['sku'],value['price'],value['url'],value['ean13'],value['upc'],value['active'],value['visiblity'],value['condition'],value['avilableForOrder'],1,value['avilableOnlineOnly'],value['shortDes'],value['description'],value['tags'],value['wholesalePrice'],value['retailPrice'],value['specialPrice'],value['specialPriceSD'],value['specialPriceED'],value['OnSale'],value['metatitle'],value['metadec'],value['images'],value['quantity'],value['outOfStock'],value['minimimQuantity'],value['avilableDate'],value['textInStock'],value['textBackOrder'],x.split(":")[1],x.split(":")[1],value['width'],value['height'],value['depth'],value['weight'],value['shipmentfee'],value['feature']])
                             c = 3
                         else:
                             spamwriter.writerow([0,value['name'],value['sku'],value['price'],value['url'],value['ean13'],value['upc'],value['active'],value['visiblity'],value['condition'],value['avilableForOrder'],1,value['avilableOnlineOnly'],value['shortDes'],value['description'],value['tags'],value['wholesalePrice'],value['retailPrice'],value['specialPrice'],value['specialPriceSD'],value['specialPriceED'],value['OnSale'],value['metatitle'],value['metadec'],value['images'],value['quantity'],value['outOfStock'],value['minimimQuantity'],value['avilableDate'],value['textInStock'],value['textBackOrder'],x.split(":")[1],x.split(":")[1],value['width'],value['height'],value['depth'],value['weight'],value['shipmentfee'],value['feature']])
+    
+    f = open('bigbuyData/files/'+str(filename)+'.json','w+')
+    f.write(json.dumps(jsondata))
+    f.close()
     return render_template('pages/download.html',info=[str(filename)])
 
 
@@ -111,21 +121,61 @@ def dash():
     if not session.get('login'):
        return redirect("/", code=302)
     filename = request.args.get('seller')
-    return render_template('pages/placeholder.dashboard.html',info=[filename])
+    arr = os.listdir(os.path.join("bigbuyData/files/config"))
+
+    return render_template('pages/placeholder.dashboard.html',info=[filename],arr = arr)
     
 
 
 
 
-@app.route('/pullData')
+@app.route('/track')
 def pulldata():
-    
-    return "Success"
+    filename = request.args.get('filename')
+    f = open('bigbuyData/files/'+str(filename)+'.json','r',encoding="utf8")
+    data = f.read()
+    f.close()
+    data = json.loads(data)
+    tempjson = {}
+    temp={}
+    tempjson["product_stock_request"] = {}
+    tempjson["product_stock_request"]["products"] = []
+    cout=0
+    changes = []
+    size = len(data)
+     
+    for x in data:
+        
+        if cout > 9:
+            cout = 0
+            print(tempjson)
+            endpoint = "https://api.bigbuy.eu/rest/catalog/productsstockbyreference.json?isoCode=en"
+            output = requests.post(endpoint, headers= {"Authorization": "Bearer NGFkMzI5NGIwMDM1ZmM2ODNkYTZmYTQ3Nzk3MjNjNDNlN2QwZGE5NWIyMjg1YWRkNDA0NzVkOTc1OTA0NTM1NA"},json=tempjson ).json()
+            print(output)
+            for x in data:
+                for y in output:
+                    if x["id"] == y["id"]:
+                        if str(x["quantity"]) != str(y["stocks"][0]["quantity"]):
+                            changes.append(y)
+            temp={}
+            tempjson = {}
+            tempjson["product_stock_request"] = {}
+            tempjson["product_stock_request"]["products"] = []
+        else:
+            cout=cout+1
+            temp={}
+            ktemp = json.loads(x)
+            temp["sku"] = ktemp["sku"]
+            tempjson["product_stock_request"]["products"].append(temp)
+
+        
+
+    return render_template('pages/tracker.html',data=changes)
 
 @app.route('/download')
 def download():
     filename = request.args.get('filename')
-    return send_from_directory(directory="bigbuyData/files", filename=str(filename)+".csv")
+    return send_from_directory(directory="bigbuyData/files", filename=str(filename)+".csv",as_attachment=True)
 
 @app.route('/addCard')
 def addCard():
@@ -139,10 +189,14 @@ def addCard():
     return render_template('pages/placeholder.firstcat.html',info=[filename],maindata=app.catdata, products=pro)
 
 
+@app.route('/signout')
+def signout():
+    session.pop('login', None)
+    return render_template('pages/placeholder.login.html')
+
 
 @app.errorhandler(500)
-def internal_error(error):
-    #db_session.rollback()
+def server_error(error):
     return render_template('errors/500.html'), 500
 
 

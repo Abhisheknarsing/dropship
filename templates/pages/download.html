@@ -11,11 +11,12 @@
     </style>
   </head>
   <body style="text-align:center">
-  <h2 style="margin-top:25%"> Download File {{ info[0] }}.csv</h2>
+  <h2 style="margin-top:20%"> Download File {{ info[0] }}.csv</h2>
   <form action="/download" target="_blank" method="GET"  style="margin:auto;width:30%;">
   <input name="filename" value="{{ info[0]  }}" style="display:none">
   <button class="btn btn-lg btn-primary btn-block "  style="background: #2457AA!important" type="submit">download</button>
   <form>
+  <a href="/dashboard?seller=bigbuy" style="margin-top:5%">Goto Dashboard</a>
 </body>
 
 </html>
