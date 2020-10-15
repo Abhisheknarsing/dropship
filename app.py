@@ -42,6 +42,7 @@ def openseller():
     select = request.args.get('select')
     filename = request.args.get('filename')
     pro = getjsonbyId(select)
+    
     return render_template('pages/placeholder.catselector.html',info=[filename,select],maindata=app.catdata, products=pro)
 
 
@@ -178,13 +179,12 @@ def download():
 @app.route('/addCard')
 def addCard():
     filename = request.args.get('filename')
-    select = request.args.get('select')
+    
     catID = request.args.get('zero')
     fi = open("bigbuyData/files/config/"+str(filename)+".json","w+")
     fi.write(catID)
     fi.close()
-    pro = getjsonbyId(select)
-    return render_template('pages/placeholder.firstcat.html',info=[filename],maindata=app.catdata, products=pro)
+    return render_template('pages/placeholder.firstcat.html',info=[filename],maindata=app.catdata)
 
 
 @app.route('/signout')
@@ -218,12 +218,15 @@ app.catdata=file.read()
 app.catdata=json.loads(app.catdata)
 file.close()
 
-def getjsonbyId(idn):
+file = open("bigbuyData/products_got_from_bigbuy.json","r")
+app.products=file.read()
+app.products=json.loads(app.products)
+file.close()
+
+def getjsonbyId(catid):
     ran_list_to_save = []
-    with open('bigbuyData/products_got_from_bigbuy.json') as f:
-        tdata = json.load(f)
-    for x in tdata:
-        if str(x['defaultcategeory']) == str(idn):
+    for x in app.products:
+        if int(x['defaultcategeory']) == int(catid):
             ran_list_to_save.append(x)
     return ran_list_to_save
 

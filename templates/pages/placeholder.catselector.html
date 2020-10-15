@@ -47,9 +47,7 @@ $.ajax({
 <div class="row">
 
 <div class="col-sm-3">
-
 <div class="list-group list-group-root well">
-
 {%- for value in maindata -%}
     {%- if value['parentCategory'] ==2 -%}
         <a href="#{{ value['id'] }}" class="list-group-item" data-toggle="collapse">
@@ -69,7 +67,7 @@ $.ajax({
                 <div class="list-group collapse" id="{{ value2['id'] }}">
                 {%- for value3 in maindata -%}
                     {%- if value3['parentCategory'] == value2['id']  -%}
-                        <a href="/openSeller?select={{ value2['id'] }}&filename={{ info[0]}}" class="list-group-item" style="padding-left:35px;" ">
+                        <a href="/openSeller?select={{ value3['id'] }}&filename={{ info[0]}}" class="list-group-item" style="padding-left:35px;" ">
                             <i class="glyphicon glyphicon-chevron-right"></i>{{ value3['name'] }}
                         </a>
                     {% endif %}
