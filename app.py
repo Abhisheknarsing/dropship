@@ -72,6 +72,9 @@ def assign():
             else:
                 for value in data:
                     if str(value['categeory']) == str(x.split(":")[0]):
+                        if zero:
+                            if str(value['quantity']) == str(0):
+                                continue
                         tempjson = {}
                         tempjson['id'] = value['id']
                         tempjson['sku'] = value['sku']
@@ -79,10 +82,10 @@ def assign():
                         jsondata.append(json.dumps(tempjson))
                         if c == 0:
                             spamwriter.writerow(["ID","Name *","Reference #*","Price*","Friendly-url*","Ean-13","UPC","Active(0/1)","visibility(both/catalog/search/none)","Condition(new/used/refurbished)","Available for order (0 = No /1 = Yes)","Show Price","Available online only (0 = No/ 1 = Yes)",	"Short Description",	"Description",	"Tags(xâ€”y--z..)","Wholesale Price","Unit price","Special Price","special price start date","Special Price End Date","On sale (0/1)","Meta Title","Meta Description","Image Url(xâ€”y--z..)","Quantity","Out of stock","Minimal Quantity","Product available date","Text when in stock","Text when backorder allowed","Category Id(x--y--z..)","Default Category id","Width","height","depth","weight","Additional shipping cost","feature(Name:Value)"])
-                            spamwriter.writerow([0,value['name'],value['sku'],value['price'],value['url'],value['ean13'],value['upc'],value['active'],value['visiblity'],value['condition'],value['avilableForOrder'],1,value['avilableOnlineOnly'],value['shortDes'],value['description'],value['tags'],value['wholesalePrice'],value['retailPrice'],value['specialPrice'],value['specialPriceSD'],value['specialPriceED'],value['OnSale'],value['metatitle'],value['metadec'],value['images'],value['quantity'],value['outOfStock'],value['minimimQuantity'],value['avilableDate'],value['textInStock'],value['textBackOrder'],x.split(":")[1],x.split(":")[1],value['width'],value['height'],value['depth'],value['weight'],value['shipmentfee'],value['feature']])
+                            spamwriter.writerow([0,value['name'],value['sku'],value['price'],value['url'],value['ean13'],value['upc'],value['active'],value['visiblity'],value['condition'],value['avilableForOrder'],1,value['avilableOnlineOnly'],value['shortDes'],value['description'],value['tags'].replace('&',"and"),value['wholesalePrice'],value['retailPrice'],value['specialPrice'],value['specialPriceSD'],value['specialPriceED'],value['OnSale'],value['metatitle'],value['metadec'],value['images'],value['quantity'],value['outOfStock'],value['minimimQuantity'],value['avilableDate'],value['textInStock'],value['textBackOrder'],x.split(":")[1],x.split(":")[1],value['width'],value['height'],value['depth'],value['weight'],value['shipmentfee'],value['feature']])
                             c = 3
                         else:
-                            spamwriter.writerow([0,value['name'],value['sku'],value['price'],value['url'],value['ean13'],value['upc'],value['active'],value['visiblity'],value['condition'],value['avilableForOrder'],1,value['avilableOnlineOnly'],value['shortDes'],value['description'],value['tags'],value['wholesalePrice'],value['retailPrice'],value['specialPrice'],value['specialPriceSD'],value['specialPriceED'],value['OnSale'],value['metatitle'],value['metadec'],value['images'],value['quantity'],value['outOfStock'],value['minimimQuantity'],value['avilableDate'],value['textInStock'],value['textBackOrder'],x.split(":")[1],x.split(":")[1],value['width'],value['height'],value['depth'],value['weight'],value['shipmentfee'],value['feature']])
+                            spamwriter.writerow([0,value['name'],value['sku'],value['price'],value['url'],value['ean13'],value['upc'],value['active'],value['visiblity'],value['condition'],value['avilableForOrder'],1,value['avilableOnlineOnly'],value['shortDes'],value['description'],value['tags'].replace('&',"and"),value['wholesalePrice'],value['retailPrice'],value['specialPrice'],value['specialPriceSD'],value['specialPriceED'],value['OnSale'],value['metatitle'],value['metadec'],value['images'],value['quantity'],value['outOfStock'],value['minimimQuantity'],value['avilableDate'],value['textInStock'],value['textBackOrder'],x.split(":")[1],x.split(":")[1],value['width'],value['height'],value['depth'],value['weight'],value['shipmentfee'],value['feature']])
     
     f = open('bigbuyData/files/'+str(filename)+'.json','w+')
     f.write(json.dumps(jsondata))
