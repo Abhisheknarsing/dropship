@@ -100,7 +100,7 @@ $.ajax({
         {% for temp in products %}
             <tr>
                 <td>{{ temp['id'] }}</td>
-                <td><a href="https://www.bigbuy.eu/en/{{ temp['url'] }}.html" >{{ temp['name'] }}</a></td>
+                <td><a target="_blank" href="https://www.bigbuy.eu/en/{{ temp['url'] }}.html" >{{ temp['name'] }}</a></td>
                 <td><img style="height:70px;width:auto" src = {{ temp['images'].split(';')[0] }}></td>
                 <td>{{ temp['quantity'] }}</td>
                 <td>{{ temp['wholesalePrice'] }}</td>

@@ -3,7 +3,7 @@ import logging
 from logging import Formatter, FileHandler
 import os
 import csv, json
-from bigbuy import finalProducts
+from bigbuy import *
 import requests
 
 
@@ -44,6 +44,13 @@ def openseller():
     pro = getjsonbyId(select)
     
     return render_template('pages/placeholder.catselector.html',info=[filename,select],maindata=app.catdata, products=pro)
+
+
+@app.route('/fetchdata')
+def fetch():
+    data = Bigbuy()
+    data.pullAllData()
+    return "success data imported successfully"
 
 
 
