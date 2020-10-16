@@ -115,7 +115,11 @@ def addcat():
     return "Success"
 
 
-
+@app.route('/deleteCard')
+def delCard():
+    filename = request.args.get('filename')
+    os.remove(os.path.join("bigbuyData/files/config",filename))
+    return "Removed"
 
 @app.route('/dashboard')
 def dash():

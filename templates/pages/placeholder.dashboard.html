@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.1.1">
-    <title>Dashboard Template · Bootstrap</title>
+    <title>Dropship Mnager</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
     <style>
@@ -241,19 +241,16 @@
     <div class="row">
     {% for item in arr %}
     
-
-    
-     <div class="col-sm-3">
+     <div class="col-sm-3" id="{{ item.split(".")[0] }}">
           <div class="card" style="width: 18rem;margin:2px;">
             <div class="card-body">
               <h5 class="card-title">{{ item.split(".")[0] }}</h5>
               <a href="/track?filename={{ item.split(".")[0] }}" class="btn btn-primary">Track</a>
+              <button onclick="delthis('{{ item }}')" class="btn btn-primary">delete</button>
             </div>
             </div>
         </div>
 
-    
-    
     {% endfor %}
 
     {% if arr |count ==0  %}
@@ -280,19 +277,19 @@
                     <form class="form-inline" method="GET" action="/addCard">
                     <div class="form-group mb-2">
                       <label for="staticEmail2" class="sr-only">ADD CSV</label>
-                      <input type="text" readonly class="form-control-plaintext" id="staticEmail2" value="Add Selection">
+                      <input type="text"  readonly class="form-control-plaintext" id="staticEmail2" value="Add Selection">
                     </div>
                     
                     <div class="form-group mx-sm-3 mb-2">
                       <label for="inputPassword2" name="filename" class="sr-only">Filename</label>
-                      <input type="text" name="filename" class="form-control" id="inputPassword2" placeholder="filename">
+                      <input type="text" id="filenameid"  onchange="filenameInput()"  name="filename" required class="form-control" id="inputPassword2" placeholder="filename">
                     </div>
                     
                      <div class="form-group mx-sm-4 mb-4">
-                      <select class="form-control " name="zero">
-                        <option value="1"> Remove 0 Quantity Files</option>
+                      <select  required class="form-control " name="zero">
+                      <option value="0">Remove zero quantity products?</option>
                         <option value="0">Yes</option>
-                        <option value="1">NO</option>
+                        <option value="1">No</option>
                       </select>
                     </div>
                     <button type="submit" class="btn btn-primary mb-2">Continue</button>
@@ -312,64 +309,58 @@
   </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 <script type="text/javascript">
-  /* globals Chart:false, feather:false */
 
-(function () {
-  'use strict'
+function filenameInput(){
 
-  feather.replace()
+arr = [
+  {% for item in arr %}
+    
+    {{ item.split(".")[0]+"," }}
 
-  // Graphs
-  var ctx = document.getElementById('myChart')
-  // eslint-disable-next-line no-unused-vars
-  var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: [
-        'Sunday',
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday'
-      ],
-      datasets: [{
-        data: [
-          15339,
-          21345,
-          18483,
-          24003,
-          23489,
-          24092,
-          12034
-        ],
-        lineTension: 0,
-        backgroundColor: 'transparent',
-        borderColor: '#007bff',
-        borderWidth: 4,
-        pointBackgroundColor: '#007bff'
-      }]
-    },
-    options: {
-      scales: {
-        yAxes: [{
-          ticks: {
-            beginAtZero: false
-          }
-        }]
-      },
-      legend: {
-        display: false
-      }
+  {% endfor %}
+];
+var equal = 0;
+
+var name = document.getElementById("filenameid").value;
+
+for(let k=0;k<arr.length;k++)
+{
+  console.log(arr[k].id)
+  if (arr[k].id == name){
+    equal++;
+  }
+}
+if(equal>0){
+  document.getElementById("filenameid").value="";
+  alert("Don't use Duplicate Values");
+}
+
+}
+
+
+
+function delthis(filename)
+{
+    var pass = prompt("Please enter password to delete", "password");
+    if(pass=="123")
+    {
+      $.ajax({
+        type: 'GET',
+        url: '/deleteCard?filename='+filename,
+        success: function(data){
+
+          alert(data);
+          document.getElementById(filename.split(".")[0]).style.display="none";
+        }
+    });
     }
-  })
-}())
+    else{
+      alert("Wrong Password");
+    }
+}
+
 
 </script>
 </body>
