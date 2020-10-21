@@ -26,8 +26,7 @@
                 <th>SKU</th>
                 <th>Before Quantity</th>
                 <th>Now Quantity</th>
-                <th>Comment</th>
-                
+                <th>Change</th>
             </tr>
         </thead>
         <tbody>
@@ -36,8 +35,7 @@
                 <td>{{ temp[0] }}</td>
                 <td>{{ temp[2] }}</td>
                 <td>{{ temp[1] }}</td>
-                {%- if temp[1]<5  -%}<td style="color:green">{{ temp[1] }}</td>{% endif %}
-                {%- if temp[1]>=5  -%}<td style="color:red">{{ temp[1] }}</td>{% endif %}
+                <td><button onclick="makeachange('{{ temp[0] }}',{{ temp[1] }})" class="btn btn-success">change</button></td>
                 
             </tr>
         {% endfor %}
@@ -62,5 +60,17 @@
 $(document).ready(function() {
     $('#datatabledata').DataTable();
 } );
+
+function makeachange(sku,quantity){
+
+$.ajax({
+        type: 'GET',
+        url: '/changeValue?filename={{ filename[0] }}&sku='+sku+'&quantity='+quantity,
+        success: function(data){
+          alert(data);
+        }
+    });
+
+}
 </script>
 </html>

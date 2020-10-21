@@ -78,7 +78,7 @@ def assign():
                     zero = True
             else:
                 for value in data:
-                    if str(value['categeory']) == str(x.split(":")[0]):
+                    if str(value['categeory']) == str(x.split("---")[0]):
                         if zero:
                             if str(value['quantity']) == str(0):
                                 continue
@@ -89,10 +89,10 @@ def assign():
                         jsondata.append(json.dumps(tempjson))
                         if c == 0:
                             spamwriter.writerow(["ID","Name *","Reference #*","Price*","Friendly-url*","Ean-13","UPC","Active(0/1)","visibility(both/catalog/search/none)","Condition(new/used/refurbished)","Available for order (0 = No /1 = Yes)","Show Price","Available online only (0 = No/ 1 = Yes)",	"Short Description",	"Description",	"Tags(xâ€”y--z..)","Wholesale Price","Unit price","Special Price","special price start date","Special Price End Date","On sale (0/1)","Meta Title","Meta Description","Image Url(xâ€”y--z..)","Quantity","Out of stock","Minimal Quantity","Product available date","Text when in stock","Text when backorder allowed","Category Id(x--y--z..)","Default Category id","Width","height","depth","weight","Additional shipping cost","feature(Name:Value)"])
-                            spamwriter.writerow([0,value['name'],value['sku'],value['price'],value['url'],value['ean13'],value['upc'],value['active'],value['visiblity'],value['condition'],value['avilableForOrder'],1,value['avilableOnlineOnly'],value['shortDes'],value['description'],value['tags'].replace('&',"and"),value['wholesalePrice'],value['retailPrice'],value['specialPrice'],value['specialPriceSD'],value['specialPriceED'],value['OnSale'],value['metatitle'],value['metadec'],value['images'],value['quantity'],value['outOfStock'],value['minimimQuantity'],value['avilableDate'],value['textInStock'],value['textBackOrder'],x.split(":")[1],x.split(":")[1],value['width'],value['height'],value['depth'],value['weight'],value['shipmentfee'],value['feature']])
+                            spamwriter.writerow([0,value['name'],value['sku'],value['price'],value['url'],value['ean13'],value['upc'],value['active'],value['visiblity'],value['condition'],value['avilableForOrder'],1,value['avilableOnlineOnly'],value['shortDes'],value['description'],value['tags'].replace('&',"and"),value['wholesalePrice'],value['retailPrice'],value['specialPrice'],value['specialPriceSD'],value['specialPriceED'],value['OnSale'],value['metatitle'],value['metadec'],value['images'],value['quantity'],value['outOfStock'],value['minimimQuantity'],value['avilableDate'],value['textInStock'],value['textBackOrder'],str(x.split("---")[1]).split(":")[1],str(x.split("---")[0]).split("1")[0],value['width'],value['height'],value['depth'],value['weight'],value['shipmentfee'],value['feature']])
                             c = 3
                         else:
-                            spamwriter.writerow([0,value['name'],value['sku'],value['price'],value['url'],value['ean13'],value['upc'],value['active'],value['visiblity'],value['condition'],value['avilableForOrder'],1,value['avilableOnlineOnly'],value['shortDes'],value['description'],value['tags'].replace('&',"and"),value['wholesalePrice'],value['retailPrice'],value['specialPrice'],value['specialPriceSD'],value['specialPriceED'],value['OnSale'],value['metatitle'],value['metadec'],value['images'],value['quantity'],value['outOfStock'],value['minimimQuantity'],value['avilableDate'],value['textInStock'],value['textBackOrder'],x.split(":")[1],x.split(":")[1],value['width'],value['height'],value['depth'],value['weight'],value['shipmentfee'],value['feature']])
+                            spamwriter.writerow([0,value['name'],value['sku'],value['price'],value['url'],value['ean13'],value['upc'],value['active'],value['visiblity'],value['condition'],value['avilableForOrder'],1,value['avilableOnlineOnly'],value['shortDes'],value['description'],value['tags'].replace('&',"and"),value['wholesalePrice'],value['retailPrice'],value['specialPrice'],value['specialPriceSD'],value['specialPriceED'],value['OnSale'],value['metatitle'],value['metadec'],value['images'],value['quantity'],value['outOfStock'],value['minimimQuantity'],value['avilableDate'],value['textInStock'],value['textBackOrder'],str(x.split("---")[1]).split(":")[1],str(x.split("---")[0]).split("1")[0],value['width'],value['height'],value['depth'],value['weight'],value['shipmentfee'],value['feature']])
     
     f = open('bigbuyData/files/'+str(filename)+'.json','w+')
     f.write(json.dumps(jsondata))
@@ -114,13 +114,14 @@ def addcat():
     filename = request.args.get('filename')
     pid= request.args.get('id')
     catname = request.args.get('categeory')
+    pcatname = request.args.get('pcategeory')
 
     fi = open("bigbuyData/files/config/"+str(filename)+".json","r")
     datatemp = fi.read()
     fi.close()
 
     fi = open("bigbuyData/files/config/"+str(filename)+".json","w+")
-    fi.write(datatemp+','+str(pid)+':'+catname)
+    fi.write(datatemp+','+str(pid)+'---'+str(pcatname)+':'+catname)
     fi.close()
     return "Success"
 
@@ -140,6 +141,34 @@ def dash():
 
     return render_template('pages/placeholder.dashboard.html',info=[filename],arr = arr)
     
+
+@app.route('/track2')
+def track2():
+    filename = request.args.get('filename')
+    f = open('bigbuyData/files/'+str(filename)+'.json','r',encoding="utf8")
+    data = f.read()
+    f.close()
+    data = json.loads(data)
+
+    f = open('bigbuyData/recCat.json','r',encoding="utf8")
+    updated_stox = f.read()
+    f.close()
+    updated_stox = json.loads(updated_stox)
+    changes = []
+
+    for x in data:
+        x = json.loads(x)
+        for y in updated_stox:
+            if str(x['id']) == str(y['id']):
+                if str(x["quantity"]) != str(y["stocks"][0]["quantity"]):
+                    if int(y["stocks"][0]["quantity"]) ==0:
+                        changes.append([y['sku'],y["stocks"][0]["quantity"],x["quantity"]])
+                    if int(x["quantity"]) == 0:
+                        changes.append([y['sku'],y["stocks"][0]["quantity"],x["quantity"]])
+    return render_template('pages/tracker.html',data=changes,filename=[filename])
+
+
+
 
 @app.route('/track')
 def pulldata():
@@ -168,7 +197,9 @@ def pulldata():
                     for y in output:
                         if j["id"] == y["id"]:
                             if str(j["quantity"]) != str(y["stocks"][0]["quantity"]):
-                                if int(y["stocks"][0]["quantity"]) < 10:
+                                if int(y["stocks"][0]["quantity"]) ==0:
+                                    changes.append([y['sku'],y["stocks"][0]["quantity"],j["quantity"]])
+                                if int(j["quantity"]) == 0:
                                     changes.append([y['sku'],y["stocks"][0]["quantity"],j["quantity"]])
                 temp={}
                 tempjson = {}
@@ -185,15 +216,48 @@ def pulldata():
             tempjson["product_stock_request"]["products"].append(temp)
     return render_template('pages/tracker.html',data=changes,filename=[filename])
 
+
+
 @app.route('/download')
 def download():
     filename = request.args.get('filename')
     return send_from_directory(directory="bigbuyData/files", filename=str(filename)+".csv",as_attachment=True)
 
+
+
+@app.route('/changeValue')
+def change():
+    sku = request.args.get('sku')
+    q = request.args.get('quantity')
+    filename = request.args.get('filename')
+    f = open('bigbuyData/files/'+str(filename)+'.json','r',encoding="utf8")
+    data = f.read()
+    f.close()
+    data = json.loads(str(data))
+    new_list = []
+    obj = {}
+    for x in data:
+        y= json.loads(x)
+        obj['id'] = str(y['id'])
+        obj['sku'] = str(y['sku'])
+        if str(y['sku']) == str(sku):
+            obj['quantity'] = q
+        else:
+            obj['quantity'] = str(y['quantity'])
+        new_list.append(json.dumps(obj))
+        obj = {}
+
+    f = open('bigbuyData/files/'+str(filename)+'.json','w',encoding="utf8")
+    f.write(json.dumps(new_list))
+    f.close()
+    print(new_list)
+
+    return "success"
+
+
 @app.route('/addCard')
 def addCard():
     filename = request.args.get('filename')
-    
     catID = request.args.get('zero')
     fi = open("bigbuyData/files/config/"+str(filename)+".json","w+")
     fi.write(catID)
@@ -207,6 +271,13 @@ def signout():
     return render_template('pages/placeholder.login.html')
 
 
+
+@app.route('/reloadStock')
+def reloadStox():
+    bb = Bigbuy()
+    bb.reloadCat()
+    return "done"
+
 @app.errorhandler(500)
 def server_error(error):
     return render_template('errors/500.html'), 500
@@ -214,7 +285,7 @@ def server_error(error):
 
 @app.errorhandler(404)
 def not_found_error(error):
-    return render_template('errors/404.html'), 404
+    return render_template('errors/404.html'), 400
 
 if not app.debug:
     file_handler = FileHandler('error.log')

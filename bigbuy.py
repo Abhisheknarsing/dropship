@@ -10,6 +10,13 @@ class Bigbuy:
     self.productsStockData = None
     self.finalProductsData = None
 
+  def reloadCat(self):
+    endpoint = "https://api.bigbuy.eu/rest/catalog/productsstock.json?isoCode=en"
+    temp_cat_data = requests.get(endpoint, headers= self.getAuthHeader()).json()
+    f = open("bigbuyData/recCat.json","w+")
+    f.write(json.dumps(temp_cat_data))
+    f.close()
+
 
   def getAuthHeader(self):
     return {"Authorization": "Bearer NGFkMzI5NGIwMDM1ZmM2ODNkYTZmYTQ3Nzk3MjNjNDNlN2QwZGE5NWIyMjg1YWRkNDA0NzVkOTc1OTA0NTM1NA"}
@@ -67,6 +74,7 @@ class productsMainInfo:
     endpoint = "https://api.bigbuy.eu/rest/catalog/products.json?isoCode=en"
     self.data = requests.get(endpoint, headers= self.bigbuy_credits.getAuthHeader() ).json()
     return "Products pulled"
+  
 
   def read(self):
   	return self.data

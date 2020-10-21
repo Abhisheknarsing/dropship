@@ -14,8 +14,8 @@
 
         <div class="col-sm-3"></div>
         <div class="col-sm-4">
-        <input type="text" id="catcat"  name="categeory" placeholder="Categeory">
-        
+        <input type="text" id="catcat"  name="categeory" placeholder="Categeory(saparateby ;)">
+        <input type="text" id="pcatcat"  name="pcategeory" placeholder="Parent Categeory">
         <button onClick="addCat()" class="btn btn-success">Add Categeory</button>
         </div>
          <div class="col-sm-2">
@@ -35,7 +35,7 @@ function addCat(filename,id){
     
 $.ajax({
         type: 'GET',
-        url: '/addCat?filename={{info[0]}}&id={{info[1]}}&categeory='+document.getElementById("catcat").value,
+        url: '/addCat?filename={{info[0]}}&id={{info[1]}}&categeory='+document.getElementById("catcat").value+'&pcategeory='+document.getElementById("pcatcat").value,
         success: function(data){
           alert(data);
         }
