@@ -23,7 +23,7 @@
         <input type="text"  name="filename" value="{{ info[0] }}" style="display:none">
         <button type="submit"  class="btn btn-warning">Finish Adding</button>
         </form
-         </div>
+        </div>
          <div class="col-sm-3"></div>
     </div>
 </div>
@@ -36,6 +36,18 @@ function addCat(filename,id){
 $.ajax({
         type: 'GET',
         url: '/addCat?filename={{info[0]}}&id={{info[1]}}&categeory='+document.getElementById("catcat").value+'&pcategeory='+document.getElementById("pcatcat").value,
+        success: function(data){
+          alert(data);
+        }
+    });
+
+}
+
+function removeProduct(filename,id){
+    console.log(id);
+$.ajax({
+        type: 'GET',
+        url: '/removeProduct?filename='+filename+'&id='+id,
         success: function(data){
           alert(data);
         }
@@ -105,7 +117,7 @@ $.ajax({
                 <td>{{ temp['quantity'] }}</td>
                 <td>{{ temp['wholesalePrice'] }}</td>
                 <td>{{ temp['price'] }}</td>
-                <td><button>add</button></td>
+                <td><button onClick ="removeProduct(&quot;{{ info[0]}}&quot;,&quot;{{ temp['id'] }}&quot;)">remove</button></td>
             </tr>
         {% endfor %}
            

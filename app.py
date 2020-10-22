@@ -60,6 +60,12 @@ def assign():
     filename = request.args.get('filename')
     fi = open("bigbuyData/files/config/"+str(filename)+".json","r")
     dat = fi.read()
+    fi.close()
+    proremover = open("bigbuyData/files/"+str(filename)+"nopro"+".json","r")
+    nopro = proremover.read()
+    proremover.close()
+    nopro = nopro.split(",")
+
     lister = dat.split(",")
     f = open("bigbuyData/products_got_from_bigbuy.json","r")
     data = json.loads(f.read())
@@ -82,6 +88,8 @@ def assign():
                         if zero:
                             if str(value['quantity']) == str(0):
                                 continue
+                        if str(value['id']) in nopro:
+                            continue
                         tempjson = {}
                         tempjson['id'] = value['id']
                         tempjson['sku'] = value['sku']
@@ -169,7 +177,7 @@ def track2():
         x = json.loads(x)
         
         for y in updated_stox:
-            print(y)
+            
             if str(x['id']) == str(y['id']):
                 if str(x["quantity"]) != str(y["stocks"][0]["quantity"]):
                     if int(y["stocks"][0]["quantity"]) == 0:
@@ -271,6 +279,9 @@ def addCard():
     fi = open("bigbuyData/files/config/"+str(filename)+".json","w+")
     fi.write(catID)
     fi.close()
+    proremover = open("bigbuyData/files/"+str(filename)+"nopro"+".json","w+")
+    proremover.write("")
+    proremover.close()
     return render_template('pages/placeholder.firstcat.html',info=[filename],maindata=app.catdata)
 
 
@@ -278,6 +289,25 @@ def addCard():
 def signout():
     session.pop('login', None)
     return render_template('pages/placeholder.login.html')
+
+
+@app.route('/removeProduct')
+def removeP():
+    filename = request.args.get('filename')
+    proid = request.args.get('id')
+    fi = open("bigbuyData/files/"+str(filename)+"nopro"+".json","r")
+    existdata = fi.read()
+    fi.close()
+    if existdata == "":
+        existdata = str(proid)
+    else:
+        existdata = existdata+","+str(proid)
+
+    fi = open("bigbuyData/files/"+str(filename)+"nopro"+".json","w+")
+    fi.write(existdata)
+    fi.close()
+
+    return "success"
 
 
 
