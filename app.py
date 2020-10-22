@@ -140,7 +140,15 @@ def dash():
     arr = os.listdir(os.path.join("bigbuyData/files/config"))
 
     return render_template('pages/placeholder.dashboard.html',info=[filename],arr = arr)
-    
+
+@app.route('/showcase')
+def showcase():
+    select = request.args.get('select')
+    if select == None:
+        select = 0
+    pro = getjsonbyId(select)
+    return render_template('pages/showcase.html',info=[select],maindata=app.catdata, products=pro)
+
 
 @app.route('/track2')
 def track2():
@@ -149,6 +157,7 @@ def track2():
     data = f.read()
     f.close()
     data = json.loads(data)
+    
 
     f = open('bigbuyData/recCat.json','r',encoding="utf8")
     updated_stox = f.read()
@@ -158,10 +167,12 @@ def track2():
 
     for x in data:
         x = json.loads(x)
+        
         for y in updated_stox:
+            print(y)
             if str(x['id']) == str(y['id']):
                 if str(x["quantity"]) != str(y["stocks"][0]["quantity"]):
-                    if int(y["stocks"][0]["quantity"]) ==0:
+                    if int(y["stocks"][0]["quantity"]) == 0:
                         changes.append([y['sku'],y["stocks"][0]["quantity"],x["quantity"]])
                     if int(x["quantity"]) == 0:
                         changes.append([y['sku'],y["stocks"][0]["quantity"],x["quantity"]])
@@ -246,11 +257,9 @@ def change():
             obj['quantity'] = str(y['quantity'])
         new_list.append(json.dumps(obj))
         obj = {}
-
     f = open('bigbuyData/files/'+str(filename)+'.json','w',encoding="utf8")
     f.write(json.dumps(new_list))
     f.close()
-    print(new_list)
 
     return "success"
 
