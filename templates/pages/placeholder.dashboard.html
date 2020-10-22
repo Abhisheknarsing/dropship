@@ -247,6 +247,27 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
 <script type="text/javascript">
 
+
+function delthis(filename)
+{
+    var pass = prompt("Please enter password to delete", "password");
+    if(pass=="123")
+    {
+      $.ajax({
+        type: 'GET',
+        url: '/deleteCard?filename='+filename,
+        success: function(data){
+
+          alert(data);
+          document.getElementById(filename.split(".")[0]).style.display="none";
+        }
+    });
+    }
+    else{
+      alert("Wrong Password");
+    }
+}
+
 function filenameInput(){
 
 arr = [
@@ -276,25 +297,7 @@ if(equal>0){
 
 
 
-function delthis(filename)
-{
-    var pass = prompt("Please enter password to delete", "password");
-    if(pass=="123")
-    {
-      $.ajax({
-        type: 'GET',
-        url: '/deleteCard?filename='+filename,
-        success: function(data){
 
-          alert(data);
-          document.getElementById(filename.split(".")[0]).style.display="none";
-        }
-    });
-    }
-    else{
-      alert("Wrong Password");
-    }
-}
 
 
 </script>
