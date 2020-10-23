@@ -5,6 +5,7 @@ import os
 import csv, json
 from bigbuy import *
 import requests
+import xlrd
 
 
 app = Flask(__name__)
@@ -42,7 +43,6 @@ def openseller():
     select = request.args.get('select')
     filename = request.args.get('filename')
     pro = getjsonbyId(select)
-    
     return render_template('pages/placeholder.catselector.html',info=[filename,select],maindata=app.catdata, products=pro)
 
 
@@ -97,10 +97,10 @@ def assign():
                         jsondata.append(json.dumps(tempjson))
                         if c == 0:
                             spamwriter.writerow(["ID","Name *","Reference #*","Price*","Friendly-url*","Ean-13","UPC","Active(0/1)","visibility(both/catalog/search/none)","Condition(new/used/refurbished)","Available for order (0 = No /1 = Yes)","Show Price","Available online only (0 = No/ 1 = Yes)",	"Short Description",	"Description",	"Tags(xâ€”y--z..)","Wholesale Price","Unit price","Special Price","special price start date","Special Price End Date","On sale (0/1)","Meta Title","Meta Description","Image Url(xâ€”y--z..)","Quantity","Out of stock","Minimal Quantity","Product available date","Text when in stock","Text when backorder allowed","Category Id(x--y--z..)","Default Category id","Width","height","depth","weight","Additional shipping cost","feature(Name:Value)"])
-                            spamwriter.writerow([0,value['name'],value['sku'],value['price'],value['url'],value['ean13'],value['upc'],value['active'],value['visiblity'],value['condition'],value['avilableForOrder'],1,value['avilableOnlineOnly'],value['shortDes'],value['description'],value['tags'].replace('&',"and"),value['wholesalePrice'],value['retailPrice'],value['specialPrice'],value['specialPriceSD'],value['specialPriceED'],value['OnSale'],value['metatitle'],value['metadec'],value['images'],value['quantity'],value['outOfStock'],value['minimimQuantity'],value['avilableDate'],value['textInStock'],value['textBackOrder'],str(x.split("---")[1]).split(":")[1],str(x.split("---")[1]).split("1")[0],value['width'],value['height'],value['depth'],value['weight'],value['shipmentfee'],value['feature']])
+                            spamwriter.writerow([0,value['name'],value['sku'],value['price'],value['url'],value['ean13'],value['upc'],value['active'],value['visiblity'],value['condition'],value['avilableForOrder'],1,value['avilableOnlineOnly'],value['shortDes'],value['description'], "".join(e for e in value['tags'].replace('"',"and") if e.isalnum()),value['wholesalePrice'],value['retailPrice'],value['specialPrice'],"2020-11-01","2020-12-31",value['OnSale'],value['metatitle'],value['metadec'],value['images'],value['quantity'],value['outOfStock'],value['minimimQuantity'],value['avilableDate'],value['textInStock'],value['textBackOrder'],str(x.split("---")[1]).split(":")[1],str(x.split("---")[1]).split(":")[0],value['width'],value['height'],value['depth'],value['weight'],value['shipmentfee'],value['feature']])
                             c = 3
                         else:
-                            spamwriter.writerow([0,value['name'],value['sku'],value['price'],value['url'],value['ean13'],value['upc'],value['active'],value['visiblity'],value['condition'],value['avilableForOrder'],1,value['avilableOnlineOnly'],value['shortDes'],value['description'],value['tags'].replace('&',"and"),value['wholesalePrice'],value['retailPrice'],value['specialPrice'],value['specialPriceSD'],value['specialPriceED'],value['OnSale'],value['metatitle'],value['metadec'],value['images'],value['quantity'],value['outOfStock'],value['minimimQuantity'],value['avilableDate'],value['textInStock'],value['textBackOrder'],str(x.split("---")[1]).split(":")[1],str(x.split("---")[1]).split("1")[0],value['width'],value['height'],value['depth'],value['weight'],value['shipmentfee'],value['feature']])
+                            spamwriter.writerow([0,value['name'],value['sku'],value['price'],value['url'],value['ean13'],value['upc'],value['active'],value['visiblity'],value['condition'],value['avilableForOrder'],1,value['avilableOnlineOnly'],value['shortDes'],value['description'],"".join(e for e in value['tags'].replace('"',"and") if e.isalnum()),value['wholesalePrice'],value['retailPrice'],value['specialPrice'],"2020-11-01","2020-12-31",value['OnSale'],value['metatitle'],value['metadec'],value['images'],value['quantity'],value['outOfStock'],value['minimimQuantity'],value['avilableDate'],value['textInStock'],value['textBackOrder'],str(x.split("---")[1]).split(":")[1],str(x.split("---")[1]).split(":")[0],value['width'],value['height'],value['depth'],value['weight'],value['shipmentfee'],value['feature']])
     
     f = open('bigbuyData/files/'+str(filename)+'.json','w+')
     f.write(json.dumps(jsondata))
@@ -158,6 +158,7 @@ def showcase():
     return render_template('pages/showcase.html',info=[select],maindata=app.catdata, products=pro)
 
 
+
 @app.route('/track2')
 def track2():
     filename = request.args.get('filename')
@@ -189,58 +190,17 @@ def track2():
 
 
 
-@app.route('/track')
-def pulldata():
-    filename = request.args.get('filename')
-    f = open('bigbuyData/files/'+str(filename)+'.json','r',encoding="utf8")
-    data = f.read()
-    f.close()
-    data = json.loads(data)
-    data2 = data
-    tempjson = {}
-    temp={}
-    tempjson["product_stock_request"] = {}
-    tempjson["product_stock_request"]["products"] = []
-    cout=0
-    changes = []
-    size = int(len(data)/10 + 1 if not len(data)%10 == 0 else 0)
-    for x in data:
-        if cout > 8:
-            cout = 0
-            endpoint = "https://api.bigbuy.eu/rest/catalog/productsstockbyreference.json?isoCode=en"
-            output = requests.post(endpoint, headers= {"Authorization": "Bearer NGFkMzI5NGIwMDM1ZmM2ODNkYTZmYTQ3Nzk3MjNjNDNlN2QwZGE5NWIyMjg1YWRkNDA0NzVkOTc1OTA0NTM1NA"},json=tempjson )
-            if output.status_code ==200:
-                output = output.json()
-                for j in data2:
-                    j = json.loads(j)
-                    for y in output:
-                        if j["id"] == y["id"]:
-                            if str(j["quantity"]) != str(y["stocks"][0]["quantity"]):
-                                if int(y["stocks"][0]["quantity"]) ==0:
-                                    changes.append([y['sku'],y["stocks"][0]["quantity"],j["quantity"]])
-                                if int(j["quantity"]) == 0:
-                                    changes.append([y['sku'],y["stocks"][0]["quantity"],j["quantity"]])
-                temp={}
-                tempjson = {}
-                tempjson["product_stock_request"] = {}
-                tempjson["product_stock_request"]["products"] = []
-            else:
-                print(output.text)
-        else:
-            
-            cout=cout+1
-            temp={}
-            ktemp = json.loads(x)
-            temp["sku"] = ktemp["sku"]
-            tempjson["product_stock_request"]["products"].append(temp)
-    return render_template('pages/tracker.html',data=changes,filename=[filename])
-
-
 
 @app.route('/download')
 def download():
     filename = request.args.get('filename')
     return send_from_directory(directory="bigbuyData/files", filename=str(filename)+".csv",as_attachment=True)
+
+
+@app.route('/downloadyts')
+def downl():
+    filename = request.args.get('filename')
+    return send_from_directory(directory="yns/files", filename=str(filename)+".csv",as_attachment=True)
 
 
 
@@ -317,6 +277,161 @@ def reloadStox():
     bb.reloadCat()
     return "done"
 
+
+
+# *****************************************************************************************************************************
+
+@app.route('/yns')
+def yns():
+    return render_template('pages/yournewstyle.html',arr=[])
+
+
+@app.route('/ynscatselector')
+def ynscat():
+    filename = request.args.get('filename')
+    catID = request.args.get('zero')
+    fi = open("yns/files/config/"+str(filename)+".json","w+")
+    fi.write(catID)
+    fi.close()
+    proremover = open("yns/files/"+str(filename)+"nopro"+".json","w+")
+    proremover.write("")
+    proremover.close()
+    
+    return render_template('pages/ynsfirst.html',info=[filename],maindata=app.ytscat)
+
+
+@app.route('/choosecat')
+def choosecat():
+    select = request.args.get('select')
+    filename = request.args.get('filename')
+    products = []
+    for x in app.ytspro:
+        if int(x['categeory']) == int(select):
+            products.append(x)
+    
+    return render_template('pages/ytscatselector.html',info=[filename,select],maindata=app.ytscat, products=products)
+
+
+@app.route('/addCatyns')
+def addcatyns():
+    filename = request.args.get('filename')
+    pid= request.args.get('id')
+    catname = request.args.get('categeory')
+    pcatname = request.args.get('pcategeory')
+
+    fi = open("yns/files/config/"+str(filename)+".json","r")
+    datatemp = fi.read()
+    fi.close()
+
+    fi = open("yns/files/config/"+str(filename)+".json","w+")
+    fi.write(datatemp+','+str(pid)+'---'+str(pcatname)+':'+catname)
+    fi.close()
+    return "Success"
+
+
+@app.route('/removeProductyns')
+def removePyns():
+    filename = request.args.get('filename')
+    proid = request.args.get('id')
+    fi = open("yns/files/"+str(filename)+"nopro"+".json","r")
+    existdata = fi.read()
+    fi.close()
+    if existdata == "":
+        existdata = str(proid)
+    else:
+        existdata = existdata+","+str(proid)
+
+    fi = open("yns/files/"+str(filename)+"nopro"+".json","w+")
+    fi.write(existdata)
+    fi.close()
+
+    return "success"
+
+
+@app.route('/assignCategeoryyns')
+def assin():
+    filename = request.args.get('filename')
+    fi = open("yns/files/config/"+str(filename)+".json","r")
+    dat = fi.read()
+    fi.close()
+    proremover = open("yns/files/"+str(filename)+"nopro"+".json","r")
+    nopro = proremover.read()
+    proremover.close()
+    nopro = nopro.split(",")
+    lister = dat.split(",")
+    data = app.ytspro
+    finaldata = []
+    jsondata=[]
+    count=0
+    c=0
+    zero = False
+    with open('yns/files/'+str(filename)+'.csv', 'w+', newline='', encoding="utf-8") as csvfile:
+        spamwriter = csv.writer(csvfile)
+        for x in lister:
+            if count == 0:
+                count=2
+                if str(x) == str("0"):
+                    zero = True
+            else:
+                for value in data:
+                    if str(value['categeory']) == str(x.split("---")[0]):
+
+                        if str(value['id']) in nopro:
+                            continue
+                        tempjson = {}
+                        tempjson['id'] = value['id']
+                        tempjson['sku'] = value['id']
+                        jsondata.append(json.dumps(tempjson))
+                        if c == 0:
+                            spamwriter.writerow(["ID","Name *","Reference #*","Price*","Friendly-url*","Ean-13","UPC","Active(0/1)","visibility(both/catalog/search/none)","Condition(new/used/refurbished)","Available for order (0 = No /1 = Yes)","Show Price","Available online only (0 = No/ 1 = Yes)",	"Short Description",	"Description",	"Tags(xâ€”y--z..)","Wholesale Price","Unit price","Special Price","special price start date","Special Price End Date","On sale (0/1)","Meta Title","Meta Description","Image Url(xâ€”y--z..)","Quantity","Out of stock","Minimal Quantity","Product available date","Text when in stock","Text when backorder allowed","Category Id(x--y--z..)","Default Category id","Width","height","depth","weight","Additional shipping cost","feature(Name:Value)"])
+                            spamwriter.writerow([0,value['name'],value['id'],value['price'],"","","",1,"both","new",1,1,0,value['description'],value['description'], "".join(e for e in value['name'].replace('"',"and") if e.isalnum()),value['WholesalePrice'],value['price'],value['price'],"2020-11-01","2020-12-31",1,value['name'],value['name'],value['images'],0,0,1,"2020-05-05","In Stock","current Supply, ordering avilabel",str(x.split("---")[1]).split(":")[1],str(x.split("---")[1]).split(":")[0],10,10,10,2,"",""])
+                            c = 3
+                        else:
+                            spamwriter.writerow([0,value['name'],value['id'],value['price'],"","","",1,"both","new",1,1,0,value['description'],value['description'], "".join(e for e in value['name'].replace('"',"and") if e.isalnum()),value['WholesalePrice'],value['price'],value['price'],"2020-11-01","2020-12-31",1,value['name'],value['name'],value['images'],0,0,1,"2020-05-05","In Stock","current Supply, ordering avilabel",str(x.split("---")[1]).split(":")[1],str(x.split("---")[1]).split(":")[0],10,10,10,2,"",""])
+    f = open('yns/files/'+str(filename)+'.json','w+')
+    f.write(json.dumps(jsondata))
+    f.close()
+    return render_template('pages/download.html',info=[str(filename)])
+
+
+
+#*********************************************************************************************************************************
+
+f = open("yns/cat.txt","r",encoding='cp850')
+k = f.read()
+f.close()
+app.ytscat = json.loads(k)
+
+ytsfilename = ("yns/ppp.xls") 
+count=0
+wb = xlrd.open_workbook(ytsfilename) 
+sheet = wb.sheet_by_index(0) 
+images_data=""
+obj = {}
+products_list = []
+for x in range(sheet.nrows):
+    if count!=0:
+        try:
+            for y in sheet.row_values(x)[9].split(","):
+                images_data = y+";"+images_data
+            obj['id'] = int(sheet.row_values(x)[0])
+            obj['name'] = sheet.row_values(x)[3]
+            obj['price'] = sheet.row_values(x)[11]
+            obj['categeory'] = int(sheet.row_values(x)[4])
+            obj['images'] = images_data
+            obj['description'] = sheet.row_values(x)[8]
+            obj['WholesalePrice'] = sheet.row_values(x)[10]
+            obj['netprice'] = sheet.row_values(x)[11]
+            products_list.append(obj)
+            obj = {}
+            images_data=""
+        except :
+            print("some")
+    else:
+        count=count+1
+    count=count+1
+app.ytspro = products_list
+
 @app.errorhandler(500)
 def server_error(error):
     return render_template('errors/500.html'), 500
@@ -335,6 +450,9 @@ if not app.debug:
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
     app.logger.info('errors')
+
+
+
 
 
 file = open("bigbuyData/categeories.txt","r")

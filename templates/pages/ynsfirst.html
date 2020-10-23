@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+</head>
+<body>
+<h3 class="text-center"><strong>Select Products<strong></h3><hr>
+
+<div class="container-fluid">
+<div class="row">
+
+<div class="col-sm-3">
+<div class="list-group list-group-root well">
+{%- for value in maindata -%}
+    
+        <a href="#{{ value['idCategory'] }}" class="list-group-item" data-toggle="collapse">
+          <i class="glyphicon glyphicon-chevron-right"></i>{{ value['names']['en'] }}
+        </a>
+        <div class="list-group collapse" id="{{ value['idCategory'] }}">
+            {%- for value2 in value['subcategories'] -%}
+               
+               <div class="list-group-item">
+                <a href="/choosecat?select={{ value2['idCategory'] }}&filename={{ info[0]}}"  style="padding-left:25px">
+                    {{ value2['names']['en'] }}
+                    
+                    <i class="glyphicon glyphicon-chevron-right"></i>
+                    </a>
+                </a>
+               </div>
+                
+               
+            {% endfor %}
+        </div>
+    
+{% endfor %}
+</div>
+</div>
+
+
+</div>
+<div>
+
+
+</body>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#datatabledata').DataTable();
+} );
+</script>
+</html>

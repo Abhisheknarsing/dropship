@@ -1,0 +1,489 @@
+[
+  {
+    "idCategory": "1",
+    "idParent": "0",
+    "order": "0",
+    "prodsCount": 0,
+    "names": {
+      "en": "For females",
+      "pl": "Damskie",
+      "ru": "Для женщин",
+      "cz": "For females",
+      "sk": "For females",
+      "lt": "For females",
+      "de": "Frauen"
+    },
+    "subcategories": [
+      {
+        "idCategory": "12",
+        "idParent": "1",
+        "order": "1",
+        "prodsCount": 14,
+        "names": {
+          "pl": "Kurtki i Płaszcze",
+          "de": "Jacken",
+          "en": "Jacket and Coat",
+          "ru": "Пиджаки, куртки",
+          "cz": "Jacket and Coat",
+          "sk": "Jacket and Coat",
+          "lt": "Jacket and Coat"
+        }
+      },
+      {
+        "idCategory": "13",
+        "idParent": "1",
+        "order": "2",
+        "prodsCount": 20,
+        "names": {
+          "de": "Jeans, Hosen",
+          "en": "Pants, Shorts",
+          "pl": "Spodnie i spodenki",
+          "ru": "брюки",
+          "cz": "Pants, Shorts",
+          "sk": "Pants, Shorts",
+          "lt": "Pants, Shorts"
+        }
+      },
+      {
+        "idCategory": "15",
+        "idParent": "1",
+        "order": "3",
+        "prodsCount": 410,
+        "names": {
+          "de": "Kleider",
+          "en": "Dresses",
+          "pl": "Sukienki ",
+          "ru": "Платья",
+          "cz": "Dresses",
+          "sk": "Dresses",
+          "lt": "Dresses"
+        }
+      },
+      {
+        "idCategory": "16",
+        "idParent": "1",
+        "order": "4",
+        "prodsCount": 4,
+        "names": {
+          "de": "Pullover",
+          "en": "Sweater",
+          "pl": "Swetry",
+          "ru": "Свитера",
+          "cz": "Sweater",
+          "sk": "Sweater",
+          "lt": "Sweater"
+        }
+      },
+      {
+        "idCategory": "17",
+        "idParent": "1",
+        "order": "5",
+        "prodsCount": 34,
+        "names": {
+          "de": "Tops, Shirts",
+          "en": "Tops",
+          "pl": "Topy",
+          "ru": "Топы",
+          "cz": "Tops",
+          "sk": "Tops",
+          "lt": "Tops"
+        }
+      },
+      {
+        "idCategory": "18",
+        "idParent": "1",
+        "order": "6",
+        "prodsCount": 1,
+        "names": {
+          "de": "Tuniken",
+          "en": "Tunic",
+          "pl": "Tuniki",
+          "ru": "Туники",
+          "cz": "Tunic",
+          "sk": "Tunic",
+          "lt": "Tunic"
+        }
+      },
+      {
+        "idCategory": "19",
+        "idParent": "1",
+        "order": "7",
+        "prodsCount": 5,
+        "names": {
+          "de": "Schuhe",
+          "en": "Shoes",
+          "pl": "Obuwie",
+          "ru": "обувь",
+          "cz": "Shoes",
+          "sk": "Shoes",
+          "lt": "Shoes"
+        }
+      },
+      {
+        "idCategory": "20",
+        "idParent": "1",
+        "order": "8",
+        "prodsCount": 9,
+        "names": {
+          "en": "Two-piece",
+          "de": "Zweiteiler",
+          "pl": "Komplety",
+          "ru": "Наборы",
+          "cz": "Two-piece",
+          "sk": "Two-piece",
+          "lt": "Two-piece"
+        }
+      },
+      {
+        "idCategory": "23",
+        "idParent": "1",
+        "order": "9",
+        "prodsCount": 5,
+        "names": {
+          "de": "Röcke",
+          "en": "Skirts",
+          "pl": "Spódniczki",
+          "ru": "подол",
+          "cz": "Skirts",
+          "sk": "Skirts",
+          "lt": "Skirts"
+        }
+      },
+      {
+        "idCategory": "24",
+        "idParent": "1",
+        "order": "10",
+        "prodsCount": 3,
+        "names": {
+          "de": "Shirts",
+          "en": "Shirt",
+          "pl": "Koszule",
+          "ru": "Блузки",
+          "cz": "Shirt",
+          "sk": "Shirt",
+          "lt": "Shirt"
+        }
+      },
+      {
+        "idCategory": "27",
+        "idParent": "1",
+        "order": "11",
+        "prodsCount": 38,
+        "names": {
+          "de": "Sweatshirts",
+          "en": "Blouse",
+          "pl": "Bluzki",
+          "ru": "Блузки",
+          "cz": "Blouse",
+          "sk": "Blouse",
+          "lt": "Blouse"
+        }
+      },
+      {
+        "idCategory": "35",
+        "idParent": "1",
+        "order": "15",
+        "prodsCount": 7,
+        "names": {
+          "en": "Jackets",
+          "de": "Navy und Jacken",
+          "pl": "Marynarki i żakiety",
+          "ru": "верхняя одежда",
+          "cz": "Jackets",
+          "sk": "Jackets",
+          "lt": "Jackets"
+        }
+      }
+    ]
+  },
+  {
+    "idCategory": "2",
+    "idParent": "0",
+    "order": "0",
+    "prodsCount": 0,
+    "names": {
+      "en": "For males",
+      "pl": "Męskie",
+      "ru": "Для мужчин",
+      "cz": "For males",
+      "sk": "For males",
+      "lt": "For males",
+      "de": "Männer"
+    },
+    "subcategories": [
+      {
+        "idCategory": "33",
+        "idParent": "2",
+        "order": "1",
+        "prodsCount": 2,
+        "names": {
+          "de": "Shirts",
+          "en": "Shirt",
+          "pl": "Koszule",
+          "ru": "Блузки",
+          "cz": "Shirt",
+          "sk": "Shirt",
+          "lt": "Shirt"
+        }
+      },
+      {
+        "idCategory": "34",
+        "idParent": "2",
+        "order": "2",
+        "prodsCount": 20,
+        "names": {
+          "en": "T-shirt",
+          "de": "T-shirt",
+          "pl": "Bluzki",
+          "ru": "Футболка",
+          "cz": "T-shirt",
+          "sk": "T-shirt",
+          "lt": "T-shirt"
+        }
+      },
+      {
+        "idCategory": "51",
+        "idParent": "2",
+        "order": "3",
+        "prodsCount": 15,
+        "names": {
+          "de": "lange Ärmel",
+          "en": "Long sleeve",
+          "pl": "Długi rękaw",
+          "ru": "длинный рукав",
+          "cz": "Long sleeve",
+          "sk": "Long sleeve",
+          "lt": "Long sleeve"
+        }
+      },
+      {
+        "idCategory": "52",
+        "idParent": "2",
+        "order": "4",
+        "prodsCount": 31,
+        "names": {
+          "de": "Hosen, Shorts",
+          "en": "Trousers, shorts",
+          "pl": "Spodnie, spodenki",
+          "ru": "Брюки, шорты",
+          "cz": "Trousers, shorts",
+          "sk": "Trousers, shorts",
+          "lt": "Trousers, shorts"
+        }
+      },
+      {
+        "idCategory": "55",
+        "idParent": "2",
+        "order": "5",
+        "prodsCount": 24,
+        "names": {
+          "de": "Sweaters",
+          "en": "Sweaters",
+          "pl": "Swetry",
+          "ru": "Свитера",
+          "cz": "Sweaters",
+          "sk": "Sweaters",
+          "lt": "Sweaters"
+        }
+      },
+      {
+        "idCategory": "60",
+        "idParent": "2",
+        "order": "7",
+        "prodsCount": 27,
+        "names": {
+          "cz": "Track-suit",
+          "de": "Trainingsanzug ",
+          "en": "SWEAT SUIT",
+          "lt": "Bėgių kostiumas",
+          "pl": "DRESY",
+          "sk": "Track-suit",
+          "ru": "трек-костюм"
+        }
+      }
+    ]
+  },
+  {
+    "idCategory": "3",
+    "idParent": "0",
+    "order": "0",
+    "prodsCount": 0,
+    "names": {
+      "pl": "Dodatki",
+      "en": "Accessories",
+      "de": "Accessories",
+      "ru": "Дополнительно",
+      "cz": "Accessories",
+      "sk": "Accessories",
+      "lt": "Accessories"
+    },
+    "subcategories": []
+  },
+  {
+    "idCategory": "62",
+    "idParent": "0",
+    "order": "0",
+    "prodsCount": 0,
+    "names": {
+      "pl": "Bielizna",
+      "en": "Bielizna",
+      "de": "Bielizna",
+      "ru": "Bielizna",
+      "sk": "Bielizna",
+      "cz": "Bielizna",
+      "lt": "Bielizna"
+    },
+    "subcategories": [
+      {
+        "idCategory": "71",
+        "idParent": "62",
+        "order": "1",
+        "prodsCount": 18,
+        "names": {
+          "cz": "Punčocháče",
+          "de": "Strumpfhose",
+          "en": "Pantyhose",
+          "lt": "Pėdkelnės",
+          "pl": "Rajstopy",
+          "sk": "Punčocháče",
+          "ru": "Колготки"
+        }
+      },
+      {
+        "idCategory": "72",
+        "idParent": "62",
+        "order": "2",
+        "prodsCount": 53,
+        "names": {
+          "pl": "Bodystocking",
+          "lt": "Bodystocking",
+          "en": "Bodystocking",
+          "de": "Bodystocking",
+          "cz": "Bodystocking",
+          "sk": "Bodystocking",
+          "ru": "Bodystocking"
+        }
+      },
+      {
+        "idCategory": "73",
+        "idParent": "62",
+        "order": "3",
+        "prodsCount": 8,
+        "names": {
+          "cz": "Babydoll",
+          "de": "Babydoll",
+          "en": "Babydoll",
+          "lt": "Babydoll",
+          "pl": "Babydoll",
+          "sk": "Babydoll",
+          "ru": "Babydoll"
+        }
+      },
+      {
+        "idCategory": "74",
+        "idParent": "62",
+        "order": "4",
+        "prodsCount": 26,
+        "names": {
+          "cz": "Kostým",
+          "de": "Kostüm",
+          "en": "Costumes",
+          "lt": "Kostiumas",
+          "pl": "Kostiumy",
+          "sk": "костюм",
+          "ru": "Kostým"
+        }
+      },
+      {
+        "idCategory": "75",
+        "idParent": "62",
+        "order": "5",
+        "prodsCount": 13,
+        "names": {
+          "cz": "Noční šaty",
+          "de": "Nachtmini",
+          "en": "Night dresses",
+          "lt": "Naktinės suknelės",
+          "pl": "Nocne mini",
+          "sk": "Noční šaty",
+          "ru": "Ночные платья"
+        }
+      },
+      {
+        "idCategory": "76",
+        "idParent": "62",
+        "order": "6",
+        "prodsCount": 15,
+        "names": {
+          "cz": "Kalhotky",
+          "de": "Höschen",
+          "en": "Panties",
+          "lt": "Kelnaitės",
+          "pl": "Majtki",
+          "sk": "Kalhotky",
+          "ru": "Трусики"
+        }
+      },
+      {
+        "idCategory": "77",
+        "idParent": "62",
+        "order": "7",
+        "prodsCount": 29,
+        "names": {
+          "cz": "Příslušenství",
+          "de": "Zubehör",
+          "en": "Accessoiries",
+          "lt": "Priedai",
+          "pl": "Akcesoria",
+          "sk": "Aксессуары",
+          "ru": "Příslušenství"
+        }
+      },
+      {
+        "idCategory": "78",
+        "idParent": "62",
+        "order": "8",
+        "prodsCount": 32,
+        "names": {
+          "cz": "Sada",
+          "de": "Set",
+          "en": "Set",
+          "lt": "Rinkinys",
+          "pl": "Komplety",
+          "sk": "Sada",
+          "ru": "набор"
+        }
+      },
+      {
+        "idCategory": "79",
+        "idParent": "62",
+        "order": "9",
+        "prodsCount": 9,
+        "names": {
+          "cz": "podprsenka",
+          "de": "Büstenhalter",
+          "en": "Bra",
+          "lt": "liemenėlė",
+          "pl": "Biustonosz",
+          "sk": "podprsenka",
+          "ru": "бюстгальтер"
+        }
+      },
+      {
+        "idCategory": "80",
+        "idParent": "62",
+        "order": "10",
+        "prodsCount": 9,
+        "names": {
+          "cz": "Paruky",
+          "de": "Perücken",
+          "en": "Wigs",
+          "lt": "Perukai",
+          "pl": "Peruki",
+          "sk": "парики",
+          "ru": "Paruky"
+        }
+      }
+    ]
+  }
+]

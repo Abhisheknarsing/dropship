@@ -279,7 +279,7 @@ function filenameInput(){
 arr = [
   {% for item in arr %}
     
-    {{ item.split(".")[0]+"," }}
+    "{{ item.split(".")[0] }}",
 
   {% endfor %}
 ];

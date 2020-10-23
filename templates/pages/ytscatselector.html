@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+</head>
+<body>
+<h3 class="text-center"><strong>Select Products<strong></h3><hr>
+
+<div class="container-fluid" >
+    <div class="row" style="padding:50px">
+
+        <div class="col-sm-3"></div>
+        <div class="col-sm-4">
+        <input type="text" id="catcat"  name="categeory" placeholder="Categeory(saparateby ;)">
+        <input type="text" id="pcatcat"  name="pcategeory" placeholder="Parent Categeory">
+        <button onClick="addCat()" class="btn btn-success">Add Categeory</button>
+        </div>
+         <div class="col-sm-2">
+         <form method="get" action = "/assignCategeoryyns" method="GET">
+        <input type="text"  name="filename" value="{{ info[0] }}" style="display:none">
+        <button type="submit"  class="btn btn-warning">Finish Adding</button>
+        </form
+        </div>
+         <div class="col-sm-3"></div>
+    </div>
+</div>
+
+
+<script>
+
+function addCat(filename,id){
+    
+$.ajax({
+        type: 'GET',
+        url: '/addCatyns?filename={{info[0]}}&id={{info[1]}}&categeory='+document.getElementById("catcat").value+'&pcategeory='+document.getElementById("pcatcat").value,
+        success: function(data){
+          alert(data);
+        }
+    });
+
+}
+
+function removeProduct(filename,id){
+    console.log(id);
+$.ajax({
+        type: 'GET',
+        url: '/removeProductyns?filename='+filename+'&id='+id,
+        success: function(data){
+          alert(data);
+        }
+    });
+
+}
+</script>
+
+
+<div class="container-fluid">
+<div class="row">
+
+
+
+<div class="col-sm-3">
+<div class="list-group list-group-root well">
+{%- for value in maindata -%}
+    
+        <a href="#{{ value['idCategory'] }}" class="list-group-item" data-toggle="collapse">
+          <i class="glyphicon glyphicon-chevron-right"></i>{{ value['names']['en'] }}
+        </a>
+        <div class="list-group collapse" id="{{ value['idCategory'] }}">
+            {%- for value2 in value['subcategories'] -%}
+               
+               <div class="list-group-item">
+                <a href="/choosecat?select={{ value2['idCategory'] }}&filename={{ info[0]}}"  style="padding-left:25px">
+                    {{ value2['names']['en'] }}
+                    
+                    <i class="glyphicon glyphicon-chevron-right"></i>
+                    </a>
+                </a>
+               </div>
+                
+               
+            {% endfor %}
+        </div>
+    
+{% endfor %}
+</div>
+</div>
+
+
+
+<div class="col-sm-9">
+<table id="datatabledata" class="table table-striped table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Images</th>
+                <th>Quantity</th>
+                <th>Wholesale </th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for temp in products %}
+            <tr>
+                <td>{{ temp['id'] }}</td>
+                <td><a target="_blank" href="" >{{ temp['name'] }}</a></td>
+                <td><img style="height:70px;width:auto" src = {{ temp['images'].split(';')[0] }}></td>
+                <td>{{ temp['quantity'] }}</td>
+                <td>{{ temp['WholesalePrice'] }}</td>
+                <td>{{ temp['price'] }}</td>
+                <td><button onClick ="removeProduct(&quot;{{ info[0]}}&quot;,&quot;{{ temp['id'] }}&quot;)">remove</button></td>
+            </tr>
+        {% endfor %}
+           
+        </tbody>
+    </table>
+</div>
+</div>
+<div>
+
+
+</body>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#datatabledata').DataTable();
+} );
+</script>
+</html>
