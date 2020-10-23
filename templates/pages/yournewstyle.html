@@ -186,8 +186,9 @@
           <div class="card" style="width: 18rem;margin:2px;">
             <div class="card-body">
               <h5 class="card-title">{{ item.split(".")[0] }}</h5>
-              <a href="/track2?filename={{ item.split(".")[0] }}" class="btn btn-primary">Track</a>
-              <button onclick="delthis('{{ item }}')" class="btn btn-primary">delete</button>
+              <a href="/trackyts?filename={{ item.split(".")[0] }}" class="btn btn-primary">Track</a>
+              <button onclick="delthis('{{ item }}')" class="btn btn-primary">Delete</button>
+              <a href="/addCombinations?filename={{ item.split(".")[0] }}" class="btn btn-primary">Get combinations</a>
             </div>
             </div>
         </div>
@@ -261,7 +262,7 @@ function delthis(filename)
     {
       $.ajax({
         type: 'GET',
-        url: '/deleteCard?filename='+filename,
+        url: '/deleteCardyts?filename='+filename,
         success: function(data){
 
           alert(data);

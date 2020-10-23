@@ -6,6 +6,8 @@ import csv, json
 from bigbuy import *
 import requests
 import xlrd
+import pandas as pd 
+import numpy as np
 
 
 app = Flask(__name__)
@@ -138,6 +140,9 @@ def addcat():
 def delCard():
     filename = request.args.get('filename')
     os.remove(os.path.join("bigbuyData/files/config",filename))
+    os.remove(os.path.join("bigbuyData/files",filename))
+    os.remove(os.path.join("bigbuyData/files",filename.replace(".json","nopro.json")))
+    os.remove(os.path.join("bigbuyData/files",filename.replace(".json",".csv")))
     return "Removed"
 
 @app.route('/dashboard')
@@ -283,7 +288,8 @@ def reloadStox():
 
 @app.route('/yns')
 def yns():
-    return render_template('pages/yournewstyle.html',arr=[])
+    arr = os.listdir(os.path.join("yns/files/config"))
+    return render_template('pages/yournewstyle.html',arr=arr)
 
 
 @app.route('/ynscatselector')
@@ -375,7 +381,6 @@ def assin():
             else:
                 for value in data:
                     if str(value['categeory']) == str(x.split("---")[0]):
-
                         if str(value['id']) in nopro:
                             continue
                         tempjson = {}
@@ -391,7 +396,86 @@ def assin():
     f = open('yns/files/'+str(filename)+'.json','w+')
     f.write(json.dumps(jsondata))
     f.close()
-    return render_template('pages/download.html',info=[str(filename)])
+    return render_template('pages/downloadyts.html',info=[str(filename)])
+
+
+@app.route('/deleteCardyts')
+def delCardyts():
+    filename = request.args.get('filename')
+    os.remove(os.path.join("yns/files/config",filename))
+    os.remove(os.path.join("yns/files",filename))
+    os.remove(os.path.join("yns/files",filename.replace(".json","nopro.json")))
+    os.remove(os.path.join("yns/files",filename.replace(".json",".csv")))
+    return "Removed"
+
+@app.route('/addCombinations')
+def addCombinations():
+    filename = request.args.get('filename')
+    return render_template('pages/addcombinations.html',info=[str(filename)])
+
+@app.route('/combi', methods=['POST'])
+def addCombi():
+    filename = request.values.get('filename')
+    uploaded_file = request.files['csvfile']
+    uploaded_file.save("yns/files/"+filename+"export.csv")
+    combinations_file_name = "yns/comb.xls"
+    exported_file_name = "yns/files/"+filename+"export.csv"
+    f = open(exported_file_name,"r")
+    data = f.read()
+    f.close()
+    data = data.replace(",","--")
+    data = data.replace(";",",")
+    data = data.replace("--",";")
+    f = open("yns/"+filename+"newimport.csv","w+")
+    data = f.write(data)
+    f.close()
+    df_new = pd.read_csv("yns/"+filename+"newimport.csv") 
+    GFG = pd.ExcelWriter("yns/"+filename+"Names.xlsx")
+    df_new.to_excel(GFG, index = False) 
+    GFG.save()
+    foundid = ""
+    loc = (combinations_file_name)
+    exported = ("yns/"+filename+"Names.xlsx")
+    
+    workbook = xlrd.open_workbook(exported)
+    exportsheet = workbook.sheet_by_index(0)
+    list_of_comb = []
+    list_obj = {}
+    tempcount = 0
+    for x in range(exportsheet.nrows):
+        if tempcount == 0:
+            tempcount=1
+            continue
+        list_obj['Kid'] = int(exportsheet.row_values(x)[0])
+        list_obj['Yid'] = int(exportsheet.row_values(x)[2])
+        list_of_comb.append(list_obj)
+        list_obj = {}
+    c=0
+    wb = xlrd.open_workbook(loc) 
+    sheet = wb.sheet_by_index(0) 
+    images=""
+    with open('yns/'+filename+'combinations.csv', 'w', newline='', encoding="utf-8") as csvi:
+        spamwriter = csv.writer(csvi)
+        spamwriter.writerow(["Product ID*","Attribute (Name:Value)*","Reference","EAN13","UPC*","Quantity","Combination avilable date","default(0/1)","image url","Delete Existing Images(0/1)"])
+        for x in range(sheet.nrows):
+            if c!=0:
+                for temp in list_of_comb:
+                    if str(temp['Yid']) == str(int(sheet.row_values(x)[0])):
+                        foundid = str(temp['Kid'])
+                        spamwriter.writerow([foundid,"Size:"+str(sheet.row_values(x)[2]).split(":")[0],sheet.row_values(x)[4],"","",int(sheet.row_values(x)[3]),"2020-05-05",0,"",0])
+                        images=""
+            else :
+                c=c+1
+            c=c+1
+    return send_from_directory(directory="yns", filename='yns/'+filename+'combinations.csv',as_attachment=True)
+
+
+
+
+
+
+
+
 
 
 
@@ -404,6 +488,7 @@ app.ytscat = json.loads(k)
 
 ytsfilename = ("yns/ppp.xls") 
 count=0
+img_count = 0
 wb = xlrd.open_workbook(ytsfilename) 
 sheet = wb.sheet_by_index(0) 
 images_data=""
@@ -413,7 +498,12 @@ for x in range(sheet.nrows):
     if count!=0:
         try:
             for y in sheet.row_values(x)[9].split(","):
-                images_data = y+";"+images_data
+                if img_count == 0:
+                    images_data = y
+                else:
+                    images_data = images_data+";"+y
+
+                
             obj['id'] = int(sheet.row_values(x)[0])
             obj['name'] = sheet.row_values(x)[3]
             obj['price'] = sheet.row_values(x)[11]
@@ -426,7 +516,7 @@ for x in range(sheet.nrows):
             obj = {}
             images_data=""
         except :
-            print("some")
+            pass
     else:
         count=count+1
     count=count+1
@@ -440,16 +530,6 @@ def server_error(error):
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('errors/404.html'), 400
-
-if not app.debug:
-    file_handler = FileHandler('error.log')
-    file_handler.setFormatter(
-        Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
-    )
-    app.logger.setLevel(logging.INFO)
-    file_handler.setLevel(logging.INFO)
-    app.logger.addHandler(file_handler)
-    app.logger.info('errors')
 
 
 
